@@ -29,9 +29,9 @@ public class MainActivity extends AppCompatActivity {
     int matchCounter=0;
     int []performance={-1,-1,-1,-1,-1,-1}; //score of a game is updated in this array
     int []score={-1,-1,-1}; //score of each match is updated in this array. A total of three matches in a game
-    String operators[]={"+","-","*","/"};
-    int correctButton=0; //which button will have the correct answer (tag of that button)
-    Random random=new Random(); //You will generate randdom alegebra questions
+    String operators[]={"+","-","x","/"};
+    Random random=new Random(); //You will generate random algebra questions
+    int correctButton=random.nextInt(4); //which button will have the correct answer (tag of that button)
     TextView textView2;
     Button button1,button2,button3,button4;
     public void load(View view){
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         textView2=findViewById(R.id.textView2);
         newMatch();
         sharedPreferences=this.getSharedPreferences("com.example.aiapp_2022", Context.MODE_PRIVATE);
-        int[][]dataFrame=dataPrep(); //dataPrep function returns a two-dimenssional array
+        int[][]dataFrame=dataPrep(); //dataPrep function returns a two-dimensional array
         double slope=LR.getSlope(dataFrame); //LR class, which provides slope on invoking getSlope
         new AlertDialog.Builder(this)
                // .setIcon() //your custom icon
@@ -70,16 +70,51 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void newMatch() {  //A game is composed of three matches
-
-        int operand1 = random.nextInt(10);
+        correctButton=random.nextInt(4);
         int operand2=0;
+        int operand1 = random.nextInt(10);
+        while(operand2==0)
+           operand2 = random.nextInt(10);
+        int correctAnswer=-100;
         //check is operand2 is not zero; otherwise in case of division-divide by zero error will come
         String operator = operators[random.nextInt(4)];
         textView2.setText(operand1 + operator + operand2);
+        if(operator.equals("+"))
+            correctAnswer=(operand1+operand2);
+        else if(operator.equals("-"))
+            correctAnswer=(operand1-operand2);
+        else if(operator.equals("x"))
+            correctAnswer=(operand1*operand2);
+        else if(operator.equals("/"))
+            correctAnswer=(operand1/operand2);
+        if(correctButton==0) {
+            button1.setText(correctAnswer + "");
+            button2.setText(correctAnswer + 1 + "");
+            button3.setText(correctAnswer - 3 + "");
+            button4.setText(correctAnswer - 1 + "");
+        }
+        else if(correctButton==1) {
+            button1.setText(correctAnswer + 2 + "");
+            button2.setText(correctAnswer + "");
+            button3.setText(correctAnswer - 1 + "");
+            button4.setText(correctAnswer + 1 + "");
+        }
+        else if(correctButton==2) {
+            button1.setText(correctAnswer + 2 + "");
+            button2.setText(correctAnswer - 2 + "");
+            button3.setText(correctAnswer + "");
+            button4.setText(correctAnswer - 1 + "");
+        }
+        else if(correctButton==3) {
+            button1.setText(correctAnswer + 2 + "");
+            button2.setText(correctAnswer + 1 + "");
+            button3.setText(correctAnswer + "");
+            button4.setText(correctAnswer - 2 + "");
+        }
 
-      // Your code here, to diplay correct and incorrect options on the buttons
+      // Your code here, to display correct and incorrect options on the buttons
 
-        if(matchCounter==3){    // if three matches are completed updatee the perfomrance in sharedpreferences
+        if(matchCounter==3){    // if three matches are completed update the performance in sharedpreferences
 
             matchCounter=0;
 
